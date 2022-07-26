@@ -52,6 +52,7 @@ namespace TotojGameDev
             Debug.LogWarning($"Save file not found in {fullPath}");
             return null;
         }
+        
         public static void RemovePlayerSavedData(string fileName = DEFAULT_FILE_NAME) {
             string fullPath = fileName != "" ? $"{SaveFilePath}/{fileName}" : $"{SaveFilePath}/{DEFAULT_FILE_NAME}";
             Debug.Log($"Removing player saved data in path : {fullPath}");

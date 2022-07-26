@@ -1,12 +1,15 @@
 using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
 using static UnityEditor.AssetDatabase;
 using static UnityEngine.Application;
+#endif
 
 namespace TotojGameDev
 {
     public static class ToolsMenu
     {
+#if UNITY_EDITOR
         [MenuItem("Tools/Setup/Create Default Folders")]
         public static void CreateDefaultFolders()
         {
@@ -27,5 +30,6 @@ namespace TotojGameDev
         
         [MenuItem("Tools/Setup/Packages/Cinemachine")]
         public static void AddCinemachine() => Packages.InstallUnityPackage("cinemachine");
+#endif
     }
 }

@@ -1,13 +1,17 @@
 ﻿using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+#if UNITY_EDITOR
 using UnityEditor.PackageManager;
+#endif
 using UnityEngine;
 
 namespace TotojGameDev
 {
     public static class Packages
     {
+        
+#if UNITY_EDITOR
         internal static async Task ReplacePackagedFromGistUrl(string id, string user = "AJulliard")
         {
             var url = GetGistUrl(id, user);
@@ -36,5 +40,6 @@ namespace TotojGameDev
         {
             Client.Add($"com.unity.{packageName}");
         }
+#endif
     }
 }
