@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Utils.Misc;
 
@@ -8,7 +9,7 @@ namespace Utils.GridSystem
      * This class is based on the video of CodeMonkey on how to build a Grid System
      * Thanks for him !
      */
-    public class Grid<TGridObject>
+    public class Grid<TGridObject> where TGridObject : IGridObject
     {
         public event EventHandler<OnGridObjectChangedEventArgs> OnGridObjectChanged;
         public class OnGridObjectChangedEventArgs
@@ -48,7 +49,7 @@ namespace Utils.GridSystem
                 {
                     for (int h = 0; h < gridArray.GetLength(1); h++)
                     {
-                        debugTextArray[w,h] = WorldText.CreateWorldText(gridArray[w, h]?.ToString(), null, GetWorldPosition(w, h) + new Vector3(cellSize, cellSize) * .5f, 20, Color.yellow, TextAnchor.MiddleCenter);
+                        debugTextArray[w,h] = WorldText.CreateWorldText(gridArray[w, h]?.ToString(), null, GetWorldPosition(w, h) + new Vector3(cellSize, cellSize) * .5f, (int) (3 * cellSize), Color.yellow, TextAnchor.MiddleCenter);
                         Debug.DrawLine(GetWorldPosition(w,h), GetWorldPosition(w, h +1), Color.yellow, 100f);
                         Debug.DrawLine(GetWorldPosition(w,h), GetWorldPosition(w + 1, h), Color.yellow, 100f);
                     }
@@ -112,5 +113,58 @@ namespace Utils.GridSystem
             GetXY(worldPosition, out var w, out var h);
             return GetGridObject(w,h);
         }
+
+        public HashSet<TGridObject> GetAll()
+        {
+            HashSet<TGridObject> all = new HashSet<TGridObject>(gridArray.GetLength(0) * gridArray.GetLength(1));
+
+            for (int w = 0; w < gridArray.GetLength(0); w++)
+            {
+                for (int h = 0; h < gridArray.GetLength(1); h++)
+                    all.Add(gridArray[w, h]);
+            }
+
+            return all;
+        }
+        
+        public bool HasEmptyPositionAboveMe(int w, int h)
+        {
+            TGridObject gridObject = gridArray[w,h];
+
+            // We are at the top of the grid already, so no empty position above
+            if (h == gridArray.GetLength(1) - 1) return false;
+            
+            for (int i = h + 1; i < gridArray.GetLength(1); i++)
+            {
+                TGridObject maybeEmptyPosition = gridArray[w, i];
+                if (maybeEmptyPosition.IsEmpty()) return true;
+            }
+
+            return false;
+        }
+
+        public TGridObject GetLastEmptyPositionAboveMe(int w, int h)
+        {
+            TGridObject gridObject = gridArray[w,h];
+
+            // We are at the top of the grid already, so no empty position above
+            if (h == gridArray.GetLength(1) - 1) return gridObject;
+            
+            for (int i = h + 1; i < gridArray.GetLength(1); i++)
+            {
+                TGridObject maybeEmptyPosition = gridArray[w, i];
+                if (maybeEmptyPosition.IsEmpty())
+                {
+                    gridObject = maybeEmptyPosition;
+                }
+            }
+
+            return gridObject;
+        }
+    }
+
+    public interface IGridObject
+    {
+        public bool IsEmpty();
     }
 }

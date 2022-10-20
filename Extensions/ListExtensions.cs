@@ -28,5 +28,20 @@ namespace TotojGameDev
         {
             return input.Count == 0;
         }
+
+        public static void AddIfDontExist<T>(this List<T> input, T newItem)
+        {
+            if (input.Contains(newItem)) return;
+            
+            input.Add(newItem);
+        }
+        
+        public static void AddIfDontExist<T>(this List<T> input, List<T> newItems)
+        {
+            foreach (T item in newItems)
+            {
+                input.AddIfDontExist(item);
+            }
+        }
     }
 }
